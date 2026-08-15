@@ -1,13 +1,15 @@
 package web.app.personalfinance.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import web.app.personalfinance.dto.CreateFinancialUserDTO;
 import web.app.personalfinance.dto.FinancialUserResponseDTO;
 import web.app.personalfinance.entity.FinancialUser;
 import web.app.personalfinance.enums.Role;
+import web.app.personalfinance.exception.UsernameAlreadyExistsException;
 import web.app.personalfinance.repository.ExpenseRepository;
 import web.app.personalfinance.repository.FinancialUserRepository;
 
@@ -34,11 +36,16 @@ public class FinancialUserService {
                     .build();
 
         } catch (Exception e) {
-          throw new UsernameNotFoundException("username already existed");// change to custom exception
+          throw new UsernameAlreadyExistsException("Username already exists");
         }
     }
 
-    public FinancialUserResponseDTO getCurrentUser() {
-        return FinancialUserResponseDTO.builder().build();//change to current user after security config
+    public FinancialUser getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("Principal class: " + authentication.getPrincipal().getClass());
+        System.out.println("Principal: " + authentication.getPrincipal());
+        System.out.println("Authorities: " + authentication.getAuthorities());
+
+        return (FinancialUser) authentication.getPrincipal();
     }
 }

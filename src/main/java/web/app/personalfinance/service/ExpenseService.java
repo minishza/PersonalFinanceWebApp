@@ -1,13 +1,13 @@
 package web.app.personalfinance.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import web.app.personalfinance.dto.CreateExpenseRequestDTO;
 import web.app.personalfinance.dto.ExpenseResponseDTO;
 import web.app.personalfinance.dto.UpdateExpenseRequestDTO;
 import web.app.personalfinance.entity.Expense;
 import web.app.personalfinance.entity.FinancialUser;
+import web.app.personalfinance.exception.ExpenseNotFoundException;
 import web.app.personalfinance.repository.ExpenseRepository;
 import web.app.personalfinance.repository.FinancialUserRepository;
 
@@ -18,9 +18,10 @@ import java.util.List;
 public class ExpenseService {
     private final ExpenseRepository expenseRepository;
     private final FinancialUserRepository financialUserRepository;
+    private final FinancialUserService financialUserService;
 
     public List<ExpenseResponseDTO> getAllExpenses() {
-        FinancialUser financialUser = FinancialUser.builder().build(); // mock user
+        FinancialUser financialUser = financialUserService.getCurrentUser();
 
         return expenseRepository.findAllByFinancialUser(financialUser)
                 .stream()
@@ -38,7 +39,7 @@ public class ExpenseService {
         FinancialUser financialUser = FinancialUser.builder().build(); // mock user
 
         Expense expense = expenseRepository.findByIdAndFinancialUserId(id, financialUser.getId())
-                .orElseThrow(); // add exception
+                .orElseThrow(() -> new ExpenseNotFoundException("Expense with ID " + id + " was not found"));
 
         return ExpenseResponseDTO.builder()
                 .id(expense.getId())
@@ -57,7 +58,7 @@ public class ExpenseService {
                 .expenseDate(createExpenseRequestDTO.getExpenseDate())
                 .build();
 
-        FinancialUser financialUser = FinancialUser.builder().build(); //mock user
+        FinancialUser financialUser = financialUserService.getCurrentUser();
 
         expense.setFinancialUser(financialUser);
         expenseRepository.save(expense);
@@ -72,10 +73,10 @@ public class ExpenseService {
     }
 
     public ExpenseResponseDTO updateExpense(Long id, UpdateExpenseRequestDTO updateExpenseRequestDTO) {
-        FinancialUser financialUser = FinancialUser.builder().build(); //mock user
+        FinancialUser financialUser = financialUserService.getCurrentUser();
 
         Expense expense = expenseRepository.findByIdAndFinancialUserId(id, financialUser.getId())
-                .orElseThrow(); // add exception
+                .orElseThrow(() -> new ExpenseNotFoundException("Expense with ID:" + id + "was not found and not updated"));
 
         if (updateExpenseRequestDTO.getDescription() != null) {
             expense.setDescription(updateExpenseRequestDTO.getDescription());
@@ -103,7 +104,7 @@ public class ExpenseService {
 
     public void deleteExpenseById(Long id) {
         if (!expenseRepository.existsById(id)) {
-            throw new UsernameNotFoundException("ExpenseNotFoundException");//change to custom exception
+            throw new ExpenseNotFoundException("Expense with ID " + id + " was not found and not deleted");
         }
         expenseRepository.deleteById(id);
     }

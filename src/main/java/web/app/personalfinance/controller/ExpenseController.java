@@ -28,16 +28,16 @@ public class ExpenseController {
     }
 
     @PostMapping
-    public ResponseEntity<ExpenseResponseDTO> createExpense(CreateExpenseRequestDTO createExpenseRequestDTO) {
+    public ResponseEntity<ExpenseResponseDTO> createExpense(@RequestBody CreateExpenseRequestDTO createExpenseRequestDTO) {
         return new ResponseEntity<>(expenseService.createExpense(createExpenseRequestDTO), HttpStatus.CREATED);
     }
 
     @PutMapping("/{expenseId}")
-    public ResponseEntity<ExpenseResponseDTO> updateExpense(@PathVariable Long expenseId, UpdateExpenseRequestDTO updateExpenseRequestDTO) {
+    public ResponseEntity<ExpenseResponseDTO> updateExpense(@PathVariable Long expenseId, @RequestBody UpdateExpenseRequestDTO updateExpenseRequestDTO) {
         return ResponseEntity.ok(expenseService.updateExpense(expenseId, updateExpenseRequestDTO));
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{expenseId}")
     public ResponseEntity<Void> deleteExpense(@PathVariable Long expenseId) {
         expenseService.deleteExpenseById(expenseId);
         return ResponseEntity.noContent().build();
