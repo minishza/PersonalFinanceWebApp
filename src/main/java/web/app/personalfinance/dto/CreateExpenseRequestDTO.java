@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import web.app.personalfinance.enums.ExpenseCategory;
 
 import java.math.BigDecimal;
@@ -11,11 +12,12 @@ import java.time.LocalDate;
 
 @Builder
 @AllArgsConstructor
-public class CreateExpenseResponseDTO {
+@Getter
+public class CreateExpenseRequestDTO {
 
     @NotNull
     @Positive(message = "pengarna måste vara mer än 0")
-    private BigDecimal amount;
+    private BigDecimal spent;
 
     private String description;
 
