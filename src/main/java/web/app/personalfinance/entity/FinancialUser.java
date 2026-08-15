@@ -30,6 +30,6 @@ public class FinancialUser {
     @CreationTimestamp
     private Timestamp creationDate;
 
-    @OneToMany(mappedBy="financial_user")
+    @OneToMany(mappedBy="financialUser")
     private List<Expense> userExpenses;
 }
