@@ -32,7 +32,7 @@ public class ExpenseController {
         return new ResponseEntity<>(expenseService.createExpense(createExpenseRequestDTO), HttpStatus.CREATED);
     }
 
-    @PutMapping("${expenseId}")
+    @PutMapping("/{expenseId}")
     public ResponseEntity<ExpenseResponseDTO> updateExpense(@PathVariable Long expenseId, UpdateExpenseRequestDTO updateExpenseRequestDTO) {
         return ResponseEntity.ok(expenseService.updateExpense(expenseId, updateExpenseRequestDTO));
     }

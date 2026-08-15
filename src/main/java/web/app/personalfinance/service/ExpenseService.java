@@ -37,7 +37,7 @@ public class ExpenseService {
     public ExpenseResponseDTO getExpenseById(Long id) {
         FinancialUser financialUser = FinancialUser.builder().build(); // mock user
 
-        Expense expense = expenseRepository.findByExpenseIdAndFinancialUserId(id, financialUser.getId())
+        Expense expense = expenseRepository.findByIdAndFinancialUserId(id, financialUser.getId())
                 .orElseThrow(); // add exception
 
         return ExpenseResponseDTO.builder()
@@ -74,7 +74,7 @@ public class ExpenseService {
     public ExpenseResponseDTO updateExpense(Long id, UpdateExpenseRequestDTO updateExpenseRequestDTO) {
         FinancialUser financialUser = FinancialUser.builder().build(); //mock user
 
-        Expense expense = expenseRepository.findByExpenseIdAndFinancialUserId(id, financialUser.getId())
+        Expense expense = expenseRepository.findByIdAndFinancialUserId(id, financialUser.getId())
                 .orElseThrow(); // add exception
 
         if (updateExpenseRequestDTO.getDescription() != null) {

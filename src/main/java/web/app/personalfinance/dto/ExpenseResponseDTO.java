@@ -2,6 +2,7 @@ package web.app.personalfinance.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 import web.app.personalfinance.enums.ExpenseCategory;
 
 import java.math.BigDecimal;
@@ -9,6 +10,7 @@ import java.time.LocalDate;
 
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class ExpenseResponseDTO {
     private Long id;
     private String description;

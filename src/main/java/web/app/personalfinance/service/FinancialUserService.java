@@ -2,6 +2,7 @@ package web.app.personalfinance.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import web.app.personalfinance.dto.CreateFinancialUserDTO;
 import web.app.personalfinance.dto.FinancialUserResponseDTO;
@@ -13,15 +14,16 @@ import web.app.personalfinance.repository.FinancialUserRepository;
 @Service
 @RequiredArgsConstructor
 public class FinancialUserService {
-    private ExpenseRepository expenseRepository;
-    private FinancialUserRepository financialUserRepository;
+    private final ExpenseRepository expenseRepository;
+    private final FinancialUserRepository financialUserRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public FinancialUserResponseDTO createFinancialUser(CreateFinancialUserDTO createFinancialUserDTO) {
         try {
             FinancialUser savedUser = financialUserRepository.save(
                     FinancialUser.builder()
                             .username(createFinancialUserDTO.getUsername())
-                            .password(createFinancialUserDTO.getPassword())
+                            .password(passwordEncoder.encode(createFinancialUserDTO.getPassword()))
                             .email(createFinancialUserDTO.getEmail())
                             .role(Role.USER)
                             .build());
@@ -32,7 +34,7 @@ public class FinancialUserService {
                     .build();
 
         } catch (Exception e) {
-          throw new UsernameNotFoundException("username already existed");// chanege to custom exception
+          throw new UsernameNotFoundException("username already existed");// change to custom exception
         }
     }
 

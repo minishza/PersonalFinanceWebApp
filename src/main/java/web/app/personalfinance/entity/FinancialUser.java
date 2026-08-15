@@ -3,9 +3,13 @@ package web.app.personalfinance.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import web.app.personalfinance.enums.Role;
 
 import java.sql.Timestamp;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Builder
@@ -15,7 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 
 @Entity
-public class FinancialUser {
+public class FinancialUser implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -33,4 +37,9 @@ public class FinancialUser {
 
     @OneToMany(mappedBy="financialUser")
     private List<Expense> userExpenses;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.emptyList();
+    }
 }
